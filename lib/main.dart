@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_app/screens/view_model/bottom_nav_bar_view_model.dart';
+import 'package:todo_app/locator.dart';
+import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 
 import 'screens/view/home_page.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: BottomNavBarViewModel(),
+          value: locator<TasksViewModel>(),
         ),
       ],
       child: const MaterialApp(
