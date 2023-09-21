@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BottomNavBarViewModel extends ChangeNotifier {
+class TasksViewModel extends ChangeNotifier {
   int currentNum = 0;
 
   void currentIndex(int index) {
