@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-SizedBox buildBottomSheet() {
-  return const SizedBox(
+import 'package:todo_app/screens/view_model/tasks_view_model.dart';
+
+SizedBox buildBottomSheet(TasksViewModel viewModel) {
+  return SizedBox(
     height: 300,
     child: Padding(
-      padding: EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top: 20.0),
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: viewModel.titleTaskController,
+              decoration: const InputDecoration(
                 label: Text('Title'),
                 hintText: 'Todo title',
                 border: OutlineInputBorder(
@@ -24,14 +27,15 @@ SizedBox buildBottomSheet() {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 18,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: TextField(
+              controller: viewModel.descriptionTaskController,
               maxLines: 5,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
                       width: .75,

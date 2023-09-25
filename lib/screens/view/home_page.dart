@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/screens/view/tasks_screen.dart';
+import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 import 'package:todo_app/screens/widget/bottom_sheet.dart';
 
-import '../view_model/tasks_view_model.dart';
 import 'archived_screen.dart';
 import 'done_screen.dart';
 
-class HomeView extends StatelessWidget {
+var key = GlobalKey<ScaffoldState>();
+
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var key = GlobalKey<ScaffoldState>();
+  State<HomeView> createState() => _HomeViewState();
+}
 
-    var selected = Provider.of<TasksViewModel>(context);
+class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    final viewModel = Provider.of<TasksViewModel>(context);
+    viewModel.createData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     List screens = [
       const TasksScreen(),
       const DoneScreen(),
@@ -25,15 +36,15 @@ class HomeView extends StatelessWidget {
       'Done Tasks',
       'Archived Tasks',
     ];
-    return Scaffold(
-      key: key,
-      appBar: AppBar(
-        title: Text(title[selected.currentNum].toString()),
-      ),
-      body: screens[selected.currentNum],
-      bottomNavigationBar: Consumer<TasksViewModel>(
-        builder: (ctx, viewModel, _) {
-          return BottomNavigationBar(
+    return Consumer<TasksViewModel>(
+      builder: (ct, viewModel, _) {
+        return Scaffold(
+          key: key,
+          appBar: AppBar(
+            title: Text(title[viewModel.currentNum].toString()),
+          ),
+          body: screens[viewModel.currentNum],
+          bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.currentNum,
               type: BottomNavigationBarType.fixed,
               onTap: (index) {
@@ -52,25 +63,33 @@ class HomeView extends StatelessWidget {
                   icon: Icon(Icons.archive),
                   label: ('Tasks'),
                 ),
-              ]);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.edit),
-        onPressed: () {
-          key.currentState!.showBottomSheet(
-            elevation: 30,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
-              ),
-            ),
-            (context) => buildBottomSheet(),
-            backgroundColor: Colors.grey[200]
-          );
-        },
-      ),
+              ]),
+          floatingActionButton: FloatingActionButton(
+            child: viewModel.opened
+                ? const Icon(Icons.add)
+                : const Icon(Icons.edit),
+            onPressed: () {
+              if (viewModel.opened == true) {
+                viewModel.addData();
+                Navigator.of(context).pop();
+                viewModel.closeBottomSheet();
+              } else {
+                key.currentState!.showBottomSheet(
+                    elevation: 30,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                      ),
+                    ),
+                    (context) => buildBottomSheet(viewModel),
+                    backgroundColor: Colors.grey[200]);
+                viewModel.closeBottomSheet();
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }
