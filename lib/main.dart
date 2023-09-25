@@ -5,7 +5,8 @@ import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 
 import 'screens/view/home_page.dart';
 
-void main() {
+void main()async {
+  await setupLocator();
   runApp(const MyApp());
 }
 
