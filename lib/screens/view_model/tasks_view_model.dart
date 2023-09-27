@@ -11,17 +11,24 @@ class TasksViewModel extends BaseViewModel {
   int currentNum = 0;
   var titleTaskController = TextEditingController();
   var descriptionTaskController = TextEditingController();
+
   TodoModel? note;
   List<TodoModel> todos = [];
   var opened = false;
+  var update = false;
 
   void currentIndex(int index) {
     currentNum = index;
     notifyListeners();
   }
 
-  closeBottomSheet() {
+  closeAddedBottomSheet() {
     opened = !opened;
+    notifyListeners();
+  }
+
+  closeUpdatedBottomSheet() {
+    update = !update;
     notifyListeners();
   }
 
@@ -38,16 +45,23 @@ class TasksViewModel extends BaseViewModel {
     if (title.isNotEmpty && description.isNotEmpty) {
       var model = TodoModel(title: title, description: description);
       await localServices.insertTodo(model);
+
+      getAllData();
+      notifyListeners();
+      print('refreshed');
     }
-    getAllData();
-    notifyListeners();
-    print('refreshed');
   }
 
-  void updateData(TodoModel todo) async {
-    await localServices.updateTodo(todo);
-    notifyListeners();
-    print('updated');
+  updateData(TodoModel todo) async {
+    titleTaskController.text = todo.title;
+    descriptionTaskController.text = todo.description;
+    var title = titleTaskController.value.text;
+    var description = descriptionTaskController.value.text;
+    if (title.isNotEmpty && description.isNotEmpty) {
+      await localServices.updateTodo(todo);
+      notifyListeners();
+      print('updated');
+    }
   }
 
   void deleteData(TodoModel todo) async {
@@ -59,6 +73,7 @@ class TasksViewModel extends BaseViewModel {
   void getAllData() async {
     final data = await localServices.getAllTodos();
     todos = data;
+    notifyListeners();
     print('getAll');
   }
 }

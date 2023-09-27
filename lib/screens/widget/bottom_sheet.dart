@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 
-SizedBox buildBottomSheet(TasksViewModel viewModel) {
+buildBottomSheet(
+    TasksViewModel viewModel, BuildContext context, VoidCallback? function) {
+  return showBottomSheet(
+      backgroundColor: Colors.grey[200],
+      elevation: 30,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+      ),
+      context: context,
+      builder: (c) {
+        return bottomSheetContent(viewModel, function);
+      }).closed.then((value) {
+    viewModel.closeUpdatedBottomSheet();
+    print(viewModel.update);
+  });
+}
+
+bottomSheetContent(TasksViewModel viewModel, VoidCallback? function) {
   return SizedBox(
     height: 300,
     child: Padding(
@@ -49,6 +69,9 @@ SizedBox buildBottomSheet(TasksViewModel viewModel) {
                   hintText: 'add todo description'),
             ),
           ),
+          viewModel.update
+              ? ElevatedButton(onPressed:()=> function, child: const Text('update'))
+              : Container()
         ],
       ),
     ),

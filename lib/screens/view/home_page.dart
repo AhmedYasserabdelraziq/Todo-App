@@ -4,10 +4,10 @@ import 'package:todo_app/screens/view/tasks_screen.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 import 'package:todo_app/screens/widget/bottom_sheet.dart';
 
+import '../base_view.dart';
+import '../model/todo_model.dart';
 import 'archived_screen.dart';
 import 'done_screen.dart';
-
-var key = GlobalKey<ScaffoldState>();
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -17,17 +17,18 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  @override
-  void initState() {
-    final viewModel = Provider.of<TasksViewModel>(context);
-    viewModel.createData();
-    super.initState();
-  }
+  var key = GlobalKey<ScaffoldState>();
+  TodoModel? todoModel;
 
   @override
   Widget build(BuildContext context) {
     List screens = [
-      const TasksScreen(),
+      TasksScreen(
+        todo: (todo) {
+          print('this todoID${todo.id}');
+          todoModel = todo;
+        },
+      ),
       const DoneScreen(),
       const ArchivedScreen(),
     ];
@@ -36,7 +37,10 @@ class _HomeViewState extends State<HomeView> {
       'Done Tasks',
       'Archived Tasks',
     ];
-    return Consumer<TasksViewModel>(
+    return BaseView<TasksViewModel>(
+      onModelReady: (viewModel) {
+        viewModel.createData();
+      },
       builder: (ct, viewModel, _) {
         return Scaffold(
           key: key,
@@ -64,28 +68,52 @@ class _HomeViewState extends State<HomeView> {
                   label: ('Tasks'),
                 ),
               ]),
-          floatingActionButton: FloatingActionButton(
-            child: viewModel.opened
-                ? const Icon(Icons.add)
-                : const Icon(Icons.edit),
-            onPressed: () {
-              if (viewModel.opened == true) {
-                viewModel.addData();
-                Navigator.of(context).pop();
-                viewModel.closeBottomSheet();
-              } else {
-                key.currentState!.showBottomSheet(
-                    elevation: 30,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25),
+          floatingActionButton: Consumer<TasksViewModel>(
+            builder: (ctx, viewModel, _) {
+              return FloatingActionButton(
+                child: !viewModel.update
+                    ? viewModel.opened
+                        ? const Icon(Icons.add)
+                        : const Icon(Icons.arrow_drop_up)
+                    : const Icon(Icons.edit),
+                onPressed: () {
+                  if (viewModel.update) {
+                    print('this todoID2${todoModel!.id}');
+                    viewModel.updateData(
+                      TodoModel(
+                        id: todoModel!.id,
+                        title: viewModel.titleTaskController.text,
+                        description: viewModel.descriptionTaskController.text,
                       ),
-                    ),
-                    (context) => buildBottomSheet(viewModel),
-                    backgroundColor: Colors.grey[200]);
-                viewModel.closeBottomSheet();
-              }
+                    );
+                    viewModel.getAllData();
+                    Navigator.of(context).pop();
+                  } else {
+                    if (viewModel.opened == true) {
+                      viewModel.addData();
+                      Navigator.of(context).pop();
+                    } else {
+                      viewModel.closeAddedBottomSheet();
+                      key.currentState!
+                          .showBottomSheet(
+                            elevation: 30,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
+                              ),
+                            ),
+                            (context) => bottomSheetContent(viewModel, null),
+                            backgroundColor: Colors.grey[200],
+                          )
+                          .closed
+                          .then((value) {
+                        viewModel.closeAddedBottomSheet();
+                      });
+                    }
+                  }
+                },
+              );
             },
           ),
         );
