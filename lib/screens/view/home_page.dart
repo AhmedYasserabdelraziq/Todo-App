@@ -32,21 +32,15 @@ class _HomeViewState extends State<HomeView> {
       const DoneScreen(),
       const ArchivedScreen(),
     ];
-    List title = [
-      'Tasks',
-      'Done Tasks',
-      'Archived Tasks',
-    ];
+
     return BaseView<TasksViewModel>(
       onModelReady: (viewModel) {
         viewModel.createData();
       },
       builder: (ct, viewModel, _) {
         return Scaffold(
+          extendBodyBehindAppBar: true,
           key: key,
-          appBar: AppBar(
-            title: Text(title[viewModel.currentNum].toString()),
-          ),
           body: screens[viewModel.currentNum],
           bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.currentNum,
@@ -103,7 +97,7 @@ class _HomeViewState extends State<HomeView> {
                                 topRight: Radius.circular(25),
                               ),
                             ),
-                            (context) => bottomSheetContent(viewModel, null),
+                            (context) => bottomSheetContent(viewModel),
                             backgroundColor: Colors.grey[200],
                           )
                           .closed

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 
-buildBottomSheet(
-    TasksViewModel viewModel, BuildContext context, VoidCallback? function) {
+buildBottomSheet(TasksViewModel viewModel, BuildContext context) {
   return showBottomSheet(
       backgroundColor: Colors.grey[200],
       elevation: 30,
@@ -14,14 +13,14 @@ buildBottomSheet(
       ),
       context: context,
       builder: (c) {
-        return bottomSheetContent(viewModel, function);
+        return bottomSheetContent(viewModel);
       }).closed.then((value) {
     viewModel.closeUpdatedBottomSheet();
     print(viewModel.update);
   });
 }
 
-bottomSheetContent(TasksViewModel viewModel, VoidCallback? function) {
+bottomSheetContent(TasksViewModel viewModel) {
   return SizedBox(
     height: 300,
     child: Padding(
@@ -69,9 +68,6 @@ bottomSheetContent(TasksViewModel viewModel, VoidCallback? function) {
                   hintText: 'add todo description'),
             ),
           ),
-          viewModel.update
-              ? ElevatedButton(onPressed:()=> function, child: const Text('update'))
-              : Container()
         ],
       ),
     ),
