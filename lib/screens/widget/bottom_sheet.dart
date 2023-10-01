@@ -13,14 +13,14 @@ buildBottomSheet(TasksViewModel viewModel, BuildContext context) {
       ),
       context: context,
       builder: (c) {
-        return bottomSheetContent(viewModel);
+        return bottomSheetContent(viewModel, context);
       }).closed.then((value) {
     viewModel.closeUpdatedBottomSheet();
     print(viewModel.update);
   });
 }
 
-bottomSheetContent(TasksViewModel viewModel) {
+bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
   return SizedBox(
     height: 300,
     child: Padding(
@@ -68,6 +68,19 @@ bottomSheetContent(TasksViewModel viewModel) {
                   hintText: 'add todo description'),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () {
+                  viewModel.selectDate(context);
+                },
+                child: Text(viewModel.dateOfTask != null
+                    ? viewModel.formatTimeOfDay(viewModel.dateOfTask!)
+                    : 'No Time Selected'),
+              )
+            ],
+          )
         ],
       ),
     ),

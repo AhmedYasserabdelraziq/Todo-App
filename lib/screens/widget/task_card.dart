@@ -1,41 +1,44 @@
 import 'package:flutter/material.dart';
-
-import '../view_model/tasks_view_model.dart';
+import 'package:todo_app/screens/model/todo_model.dart';
+import 'package:todo_app/utils/colors.dart';
 
 class BuildCard extends StatelessWidget {
-  final TasksViewModel viewModel;
-  final int index;
+  final TodoModel viewModel;
 
-  const BuildCard({super.key, required this.viewModel, required this.index});
+  const BuildCard({super.key, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(viewModel.todos[index].title.toString()),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 3,
+              color: AppColors.primary,
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
-            child: Divider(
-              height: 1,
-              thickness: 2,
+            const SizedBox(
+              width: 20,
             ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Text(viewModel.todos[index].description.toString()),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  viewModel.title,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  viewModel.dateTime.toString(),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
