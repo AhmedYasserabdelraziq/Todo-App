@@ -6,11 +6,13 @@ class TodoModel {
   String id;
   final String title;
   final String description;
+  final String? dateTime;
 
   TodoModel({
     String? id,
     required this.title,
     required this.description,
+    this.dateTime,
   }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() {
@@ -18,6 +20,7 @@ class TodoModel {
       'id': id,
       'title': title,
       'description': description,
+      'datetime': dateTime,
     };
   }
 
@@ -26,6 +29,7 @@ class TodoModel {
       id: map['id'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
+      dateTime: map['datetime'],
     );
   }
 }

@@ -55,9 +55,7 @@ class WeekDayList extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            now = now.add(const Duration(days: 1));
-          });
+          now = now.add(const Duration(days: 1));
         },
         child: const Icon(Icons.arrow_forward),
       ),

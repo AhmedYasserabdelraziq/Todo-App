@@ -22,13 +22,15 @@ class DayCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Text(
-                text,
-                style: TextStyle(
-                  fontSize: dayToShow.day == DateTime.now().day ? 20 : 11,
-                  color: dayToShow.day == DateTime.now().day
-                      ? color
-                      : Colors.black87,
+              FittedBox(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: dayToShow.day == DateTime.now().day ? 50 : 11,
+                    color: dayToShow.day == DateTime.now().day
+                        ? color
+                        : Colors.black87,
+                  ),
                 ),
               ),
               const SizedBox(

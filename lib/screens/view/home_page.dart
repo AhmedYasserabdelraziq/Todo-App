@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_app/screens/view/tasks_screen.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 import 'package:todo_app/screens/widget/bottom_sheet.dart';
+import 'package:todo_app/utils/colors.dart';
 
 import '../base_view.dart';
 import '../model/todo_model.dart';
@@ -39,6 +40,7 @@ class _HomeViewState extends State<HomeView> {
       },
       builder: (ct, viewModel, _) {
         return Scaffold(
+          backgroundColor: AppColors.background,
           extendBodyBehindAppBar: true,
           key: key,
           body: screens[viewModel.currentNum],
@@ -73,20 +75,14 @@ class _HomeViewState extends State<HomeView> {
                 onPressed: () {
                   if (viewModel.update) {
                     print('this todoID2${todoModel!.id}');
-                    viewModel.updateData(
-                      TodoModel(
-                        id: todoModel!.id,
-                        title: viewModel.titleTaskController.text,
-                        description: viewModel.descriptionTaskController.text,
-                      ),
-                    );
-                    viewModel.getAllData();
+                    viewModel.updateData(todoModel!);
                     Navigator.of(context).pop();
                   } else {
                     if (viewModel.opened == true) {
                       viewModel.addData();
                       Navigator.of(context).pop();
                     } else {
+                      viewModel.reset();
                       viewModel.closeAddedBottomSheet();
                       key.currentState!
                           .showBottomSheet(
@@ -97,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
                                 topRight: Radius.circular(25),
                               ),
                             ),
-                            (context) => bottomSheetContent(viewModel),
+                            (context) => bottomSheetContent(viewModel, context),
                             backgroundColor: Colors.grey[200],
                           )
                           .closed
