@@ -14,7 +14,7 @@ class TasksViewModel extends BaseViewModel {
 
   TodoModel? note;
   List<TodoModel> todos = [];
-  TimeOfDay? dateOfTask;
+  String? dateOfTask;
 
   var opened = false;
   var update = false;
@@ -46,9 +46,7 @@ class TasksViewModel extends BaseViewModel {
     var description = descriptionTaskController.value.text;
     if (title.isNotEmpty && description.isNotEmpty && dateOfTask != null) {
       var addModel = TodoModel(
-          title: title,
-          description: description,
-          dateTime: formatTimeOfDay(dateOfTask!));
+          title: title, description: description, dateTime: dateOfTask!);
       await localServices.insertTodo(addModel);
 
       getAllData();
@@ -67,7 +65,7 @@ class TasksViewModel extends BaseViewModel {
           id: todo.id,
           title: titleTaskController.text,
           description: descriptionTaskController.text,
-          dateTime: formatTimeOfDay(dateOfTask!),
+          dateTime: dateOfTask!,
         ),
       );
     }
@@ -92,13 +90,13 @@ class TasksViewModel extends BaseViewModel {
   void reset() {
     titleTaskController.clear();
     descriptionTaskController.clear();
-    dateOfTask = null;
+    dateOfTask = '';
   }
 
   void currentDataToUpdated(TodoModel todo) {
     titleTaskController.text = todo.title;
     descriptionTaskController.text = todo.description;
-    dateOfTask = stringToTimeOfDay(todo.dateTime.toString());
+    dateOfTask = todo.dateTime;
     notifyListeners();
   }
 
@@ -123,20 +121,7 @@ class TasksViewModel extends BaseViewModel {
     }
   }
 
-  void selectDate(BuildContext context) async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-
-    if (pickedTime != null) {
-      dateOfTask = pickedTime;
-      print(dateOfTask);
-    }
-    notifyListeners();
-  }
-
-  String formatTimeOfDay(TimeOfDay date) {
+  String timeOfDayToString(TimeOfDay date) {
     int hour = date.hour;
     int minute = date.minute;
     String period = "AM";
@@ -179,5 +164,10 @@ class TasksViewModel extends BaseViewModel {
     }
 
     throw const FormatException('Invalid time format');
+  }
+
+  currentDate(TimeOfDay timeOfDay) {
+    dateOfTask = timeOfDayToString(timeOfDay);
+    notifyListeners();
   }
 }

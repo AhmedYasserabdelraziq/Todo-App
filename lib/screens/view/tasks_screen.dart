@@ -51,11 +51,14 @@ class TasksScreen extends StatelessWidget {
                             child: BuildCard(
                               viewModel: viewModel.todos[index],
                             ).onTap(() {
-                              viewModel
-                                  .currentDataToUpdated(viewModel.todos[index]);
                               todo(viewModel.todos[index]);
                               if (viewModel.update) {
+                                viewModel.currentDataToUpdated(
+                                    viewModel.todos[index]);
+                                buildBottomSheet(viewModel, context);
                               } else {
+                                viewModel.currentDataToUpdated(
+                                    viewModel.todos[index]);
                                 buildBottomSheet(viewModel, context);
                                 viewModel.closeUpdatedBottomSheet();
                                 print(viewModel.update);

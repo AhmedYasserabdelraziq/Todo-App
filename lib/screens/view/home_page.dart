@@ -82,6 +82,7 @@ class _HomeViewState extends State<HomeView> {
                       viewModel.addData();
                       Navigator.of(context).pop();
                     } else {
+                      viewModel.reset();
                       viewModel.closeAddedBottomSheet();
                       key.currentState!
                           .showBottomSheet(

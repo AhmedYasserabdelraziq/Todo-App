@@ -71,13 +71,25 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
-                onPressed: () {
-                  viewModel.selectDate(context);
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return TextButton(
+                    onPressed: () async {
+                      showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      ).then((value) {
+                        if (value != null) {
+                          viewModel.currentDate(value);
+                          setState(() {}); // this will rebuild the BottomSheet
+                        }
+                      });
+                    },
+                    child: Text(viewModel.dateOfTask != null
+                        ? viewModel.dateOfTask!
+                        : 'No Time Selected'),
+                  );
                 },
-                child: Text(viewModel.dateOfTask != null
-                    ? viewModel.formatTimeOfDay(viewModel.dateOfTask!)
-                    : 'No Time Selected'),
               )
             ],
           )
