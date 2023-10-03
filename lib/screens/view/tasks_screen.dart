@@ -84,11 +84,17 @@ class TasksScreen extends StatelessWidget {
                 5,
                 (index) {
                   DateTime? dayToShow = now.add(Duration(days: index));
+                  DateTime dateOnly =
+                      DateTime(dayToShow.year, dayToShow.month, dayToShow.day);
                   return DayCard(
                     dayToShow: dayToShow,
                     color: AppColors.primary,
                     text: viewModel.weekDayName(dayToShow.weekday),
-                  );
+                  ).onTap(() {
+                    viewModel.getAllData(
+                      dateOnly,
+                    );
+                  });
                 },
               ),
             ),

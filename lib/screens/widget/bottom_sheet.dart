@@ -16,6 +16,7 @@ buildBottomSheet(TasksViewModel viewModel, BuildContext context) {
         return bottomSheetContent(viewModel, context);
       }).closed.then((value) {
     viewModel.closeUpdatedBottomSheet();
+    viewModel.reset();
     print(viewModel.update);
   });
 }
@@ -75,6 +76,17 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
                 builder: (BuildContext context, StateSetter setState) {
                   return TextButton(
                     onPressed: () async {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(DateTime.now().year - 2),
+                        lastDate: DateTime(DateTime.now().year + 50),
+                      ).then((value) {
+                        if (value != null) {
+                          print(value);
+                          viewModel.setCompleteDate(value);
+                        }
+                      });
                       showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),

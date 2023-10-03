@@ -11,11 +11,10 @@ class TasksViewModel extends BaseViewModel {
   int currentNum = 0;
   var titleTaskController = TextEditingController();
   var descriptionTaskController = TextEditingController();
-
   TodoModel? note;
   List<TodoModel> todos = [];
   String? dateOfTask;
-
+  DateTime? daytime;
   var opened = false;
   var update = false;
 
@@ -35,8 +34,10 @@ class TasksViewModel extends BaseViewModel {
   }
 
   void createData() async {
+    DateTime now = DateTime.now();
+    DateTime dateOnly = DateTime(now.year, now.month, now.day);
     await localServices.database;
-    getAllData();
+    getAllData(dateOnly);
     notifyListeners();
     print('createdDatabase');
   }
@@ -46,10 +47,14 @@ class TasksViewModel extends BaseViewModel {
     var description = descriptionTaskController.value.text;
     if (title.isNotEmpty && description.isNotEmpty && dateOfTask != null) {
       var addModel = TodoModel(
-          title: title, description: description, dateTime: dateOfTask!);
+        title: title,
+        description: description,
+        dateTime: dateOfTask!,
+        dayTime: daytime.toString(),
+      );
       await localServices.insertTodo(addModel);
 
-      getAllData();
+      getAllData(daytime);
       notifyListeners();
       print('refreshed');
     }
@@ -69,7 +74,7 @@ class TasksViewModel extends BaseViewModel {
         ),
       );
     }
-    getAllData();
+    getAllData(null);
     notifyListeners();
     print('updated');
   }
@@ -80,8 +85,8 @@ class TasksViewModel extends BaseViewModel {
     print('deleted');
   }
 
-  void getAllData() async {
-    final data = await localServices.getAllTodos();
+  void getAllData(DateTime? dateTime) async {
+    final data = await localServices.getAllTodos(dateTime.toString());
     todos = data;
     notifyListeners();
     print('getAll');
@@ -90,7 +95,7 @@ class TasksViewModel extends BaseViewModel {
   void reset() {
     titleTaskController.clear();
     descriptionTaskController.clear();
-    dateOfTask = '';
+    dateOfTask = null;
   }
 
   void currentDataToUpdated(TodoModel todo) {
@@ -169,5 +174,10 @@ class TasksViewModel extends BaseViewModel {
   currentDate(TimeOfDay timeOfDay) {
     dateOfTask = timeOfDayToString(timeOfDay);
     notifyListeners();
+  }
+
+  void setCompleteDate(DateTime date) {
+    daytime = date;
+    setState();
   }
 }

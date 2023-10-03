@@ -76,13 +76,13 @@ class _HomeViewState extends State<HomeView> {
                   if (viewModel.update) {
                     print('this todoID2${todoModel!.id}');
                     viewModel.updateData(todoModel!);
+                    viewModel.reset();
                     Navigator.of(context).pop();
                   } else {
                     if (viewModel.opened == true) {
                       viewModel.addData();
                       Navigator.of(context).pop();
                     } else {
-                      viewModel.reset();
                       viewModel.closeAddedBottomSheet();
                       key.currentState!
                           .showBottomSheet(
