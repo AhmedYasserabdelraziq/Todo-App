@@ -49,7 +49,8 @@ class TasksScreen extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: BuildCard(
-                              viewModel: viewModel.todos[index],
+                              todos: viewModel.todos[index],
+                              viewModel: viewModel,
                             ).onTap(() {
                               todo(viewModel.todos[index]);
                               if (viewModel.update) {
@@ -77,7 +78,7 @@ class TasksScreen extends StatelessWidget {
         Positioned(
           top: 180,
           child: SizedBox(
-            height: 117,
+            height: 110,
             width: 500,
             child: Row(
               children: List.generate(
@@ -86,15 +87,20 @@ class TasksScreen extends StatelessWidget {
                   DateTime? dayToShow = now.add(Duration(days: index));
                   DateTime dateOnly =
                       DateTime(dayToShow.year, dayToShow.month, dayToShow.day);
-                  return DayCard(
-                    dayToShow: dayToShow,
-                    color: AppColors.primary,
-                    text: viewModel.weekDayName(dayToShow.weekday),
-                  ).onTap(() {
-                    viewModel.getAllData(
-                      dateOnly,
-                    );
-                  });
+                  return InkWell(
+                    onTap: () async {
+                      await viewModel.selectedDay(dayToShow.day);
+                      viewModel.getAllData(
+                        dateOnly,
+                      );
+                    },
+                    child: DayCard(
+                      dayToShow: dayToShow,
+                      color: AppColors.primary,
+                      text: viewModel.weekDayName(dayToShow.weekday),
+                      selectDay: viewModel.selectedCardDay,
+                    ),
+                  );
                 },
               ),
             ),

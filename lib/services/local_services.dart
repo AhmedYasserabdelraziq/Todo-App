@@ -18,7 +18,7 @@ class LocalServices {
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'todoDBB.db');
-
+    print("Database path: ${await getDatabasesPath()}");
     return openDatabase(
       path,
       version: 2,

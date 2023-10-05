@@ -17,10 +17,19 @@ class TasksViewModel extends BaseViewModel {
   DateTime? daytime;
   var opened = false;
   var update = false;
+  var taskDone = false;
+  int? selectedCardDay = DateTime.now().day;
 
   void currentIndex(int index) {
     currentNum = index;
     notifyListeners();
+  }
+
+  Future? selectedDay(int? index) {
+    selectedCardDay = index;
+    print(selectedCardDay);
+    notifyListeners();
+    return null;
   }
 
   closeAddedBottomSheet() {
@@ -30,6 +39,11 @@ class TasksViewModel extends BaseViewModel {
 
   closeUpdatedBottomSheet() {
     update = !update;
+    notifyListeners();
+  }
+
+  void tasksDone() {
+    taskDone = !taskDone;
     notifyListeners();
   }
 
@@ -67,14 +81,15 @@ class TasksViewModel extends BaseViewModel {
     if (title.isNotEmpty && description.isNotEmpty) {
       await localServices.updateTodo(
         TodoModel(
-          id: todo.id,
-          title: titleTaskController.text,
-          description: descriptionTaskController.text,
-          dateTime: dateOfTask!,
-        ),
+            id: todo.id,
+            title: titleTaskController.text,
+            description: descriptionTaskController.text,
+            dateTime: dateOfTask!,
+            dayTime: daytime.toString()),
       );
     }
-    getAllData(null);
+    print(daytime);
+    getAllData(daytime);
     notifyListeners();
     print('updated');
   }
@@ -102,25 +117,26 @@ class TasksViewModel extends BaseViewModel {
     titleTaskController.text = todo.title;
     descriptionTaskController.text = todo.description;
     dateOfTask = todo.dateTime;
+    daytime = DateTime.parse(todo.dayTime!);
     notifyListeners();
   }
 
   String weekDayName(int weekday) {
     switch (weekday) {
       case 1:
-        return 'Monday';
+        return 'Mon';
       case 2:
-        return 'Tuesday';
+        return 'Tues';
       case 3:
-        return 'Wednesday';
+        return 'Wed';
       case 4:
-        return 'Thursday';
+        return 'Thu';
       case 5:
-        return 'Friday';
+        return 'Fri';
       case 6:
-        return 'Saturday';
+        return 'Sat';
       case 7:
-        return 'Sunday';
+        return 'Sun';
       default:
         return '';
     }
@@ -146,32 +162,7 @@ class TasksViewModel extends BaseViewModel {
     return '$hour:$minuteStr $period';
   }
 
-  TimeOfDay stringToTimeOfDay(String timeString) {
-    final format =
-        RegExp(r'(?<hour>\d{1,2}):(?<minute>\d{2})\s?(?<period>AM|PM)?');
-
-    final match = format.firstMatch(timeString);
-
-    if (match != null) {
-      int hour = int.parse(match.namedGroup('hour')!);
-      final minute = int.parse(match.namedGroup('minute')!);
-      final period = match.namedGroup('period');
-
-      if (period != null) {
-        if (hour == 12 && period == 'AM') {
-          hour = 0;
-        } else if (hour < 12 && period == 'PM') {
-          hour += 12;
-        }
-      }
-
-      return TimeOfDay(hour: hour, minute: minute);
-    }
-
-    throw const FormatException('Invalid time format');
-  }
-
-  currentDate(TimeOfDay timeOfDay) {
+  currentDateToSelect(TimeOfDay timeOfDay) {
     dateOfTask = timeOfDayToString(timeOfDay);
     notifyListeners();
   }
