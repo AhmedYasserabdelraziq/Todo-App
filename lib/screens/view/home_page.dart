@@ -75,12 +75,22 @@ class _HomeViewState extends State<HomeView> {
                 onPressed: () {
                   if (viewModel.update) {
                     print('this todoID2${todoModel!.id}');
-                    viewModel.updateData(todoModel!);
+                    viewModel.updateData(
+                      TodoModel(
+                        id: todoModel!.id,
+                        title: viewModel.titleTaskController.text,
+                        description: viewModel.descriptionTaskController.text,
+                        dateTime: viewModel.dateOfTask!,
+                        dayTime: viewModel.daytime.toString(),
+                        tasksDone: todoModel!.tasksDone,
+                      ),
+                    );
                     viewModel.reset();
                     Navigator.of(context).pop();
                   } else {
                     if (viewModel.opened == true) {
                       viewModel.addData();
+                      print(viewModel.daytime);
                       Navigator.of(context).pop();
                     } else {
                       viewModel.closeAddedBottomSheet();

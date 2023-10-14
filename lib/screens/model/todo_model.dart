@@ -4,17 +4,19 @@ const uuid = Uuid();
 
 class TodoModel {
   String id;
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
   final String? dateTime;
   final String? dayTime;
+  final String? tasksDone;
 
   TodoModel({
     String? id,
-    required this.title,
-    required this.description,
+    this.title,
+    this.description,
     this.dateTime,
     this.dayTime,
+    this.tasksDone,
   }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() {
@@ -24,6 +26,7 @@ class TodoModel {
       'description': description,
       'datetime': dateTime,
       'daytime': dayTime,
+      'doneTasks': tasksDone,
     };
   }
 
@@ -34,6 +37,7 @@ class TodoModel {
       description: map['description'] as String,
       dateTime: map['datetime'],
       dayTime: map['daytime'],
+      tasksDone: map['doneTasks'],
     );
   }
 }

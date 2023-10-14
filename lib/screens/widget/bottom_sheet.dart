@@ -85,9 +85,10 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
                         if (value != null) {
                           print(value);
                           viewModel.setCompleteDate(value);
+                          setState(() {});
                         }
                       });
-                      await showTimePicker(
+                      showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),
                       ).then((value) {
@@ -97,9 +98,11 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
                         }
                       });
                     },
-                    child: Text(viewModel.dateOfTask != null
-                        ? '${viewModel.dateOfTask!} : ${viewModel.daytime}'
-                        : 'No Time Selected'),
+                    child: Text(
+                      viewModel.dateOfTask != null && viewModel.daytime != null
+                          ? '${viewModel.dateOfTask!} : ${viewModel.formatDateTime(viewModel.daytime!)}'
+                          : 'No Time Selected',
+                    ),
                   );
                 },
               )

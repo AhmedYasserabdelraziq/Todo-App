@@ -85,14 +85,15 @@ class TasksScreen extends StatelessWidget {
                 5,
                 (index) {
                   DateTime? dayToShow = now.add(Duration(days: index));
-                  DateTime dateOnly =
+                  DateTime dateSelected =
                       DateTime(dayToShow.year, dayToShow.month, dayToShow.day);
                   return InkWell(
                     onTap: () async {
                       await viewModel.selectedDay(dayToShow.day);
                       viewModel.getAllData(
-                        dateOnly,
+                        dateSelected,
                       );
+                      viewModel.currentDate(dateSelected);
                     },
                     child: DayCard(
                       dayToShow: dayToShow,
