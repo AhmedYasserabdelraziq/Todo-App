@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app/screens/base_view_model.dart';
 import 'package:todo_app/screens/model/todo_model.dart';
 import 'package:todo_app/services/local_services.dart';
@@ -17,7 +18,8 @@ class TasksViewModel extends BaseViewModel {
   DateTime? daytime;
   var opened = false;
   var update = false;
-  var taskDone = false;
+  String? tasksState;
+
   int? selectedCardDay = DateTime.now().day;
 
   void currentIndex(int index) {
@@ -42,13 +44,19 @@ class TasksViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void tasksDone() {
-    taskDone = !taskDone;
+  void taskDone(String tasDon) {
+    tasksState = tasDon;
+    notifyListeners();
+  }
+
+  void removeTasksDone(String removeTask) {
+    tasksState = removeTask;
     notifyListeners();
   }
 
   void createData() async {
     DateTime now = DateTime.now();
+    daytime = now;
     DateTime dateOnly = DateTime(now.year, now.month, now.day);
     await localServices.database;
     getAllData(dateOnly);
@@ -56,7 +64,7 @@ class TasksViewModel extends BaseViewModel {
     print('createdDatabase');
   }
 
-  void addData() async {
+  Future addData() async {
     var title = titleTaskController.value.text;
     var description = descriptionTaskController.value.text;
     if (title.isNotEmpty && description.isNotEmpty && dateOfTask != null) {
@@ -65,31 +73,26 @@ class TasksViewModel extends BaseViewModel {
         description: description,
         dateTime: dateOfTask!,
         dayTime: daytime.toString(),
+        tasksDone: 'notDone',
       );
       await localServices.insertTodo(addModel);
-
       getAllData(daytime);
       notifyListeners();
       print('refreshed');
+      reset();
+      print('reset');
     }
-    reset();
+    //if (title.isNotEmpty && description.isNotEmpty && dateOfTask != null&&daytime) {
   }
 
   updateData(TodoModel todo) async {
-    var title = titleTaskController.value.text;
-    var description = descriptionTaskController.value.text;
-    if (title.isNotEmpty && description.isNotEmpty) {
-      await localServices.updateTodo(
-        TodoModel(
-            id: todo.id,
-            title: titleTaskController.text,
-            description: descriptionTaskController.text,
-            dateTime: dateOfTask!,
-            dayTime: daytime.toString()),
-      );
+    var title = todo.title;
+    var description = todo.description;
+    if (title!.isNotEmpty && description!.isNotEmpty) {
+      await localServices.updateTodo(todo);
     }
     print(daytime);
-    getAllData(daytime);
+    getAllData(DateTime.parse(todo.dayTime!));
     notifyListeners();
     print('updated');
   }
@@ -114,10 +117,16 @@ class TasksViewModel extends BaseViewModel {
   }
 
   void currentDataToUpdated(TodoModel todo) {
-    titleTaskController.text = todo.title;
-    descriptionTaskController.text = todo.description;
+    titleTaskController.text = todo.title!;
+    descriptionTaskController.text = todo.description!;
     dateOfTask = todo.dateTime;
     daytime = DateTime.parse(todo.dayTime!);
+    notifyListeners();
+  }
+
+  void currentDate(DateTime dateTime) {
+    daytime = dateTime;
+    print(daytime);
     notifyListeners();
   }
 
@@ -162,6 +171,10 @@ class TasksViewModel extends BaseViewModel {
     return '$hour:$minuteStr $period';
   }
 
+  String formatDateTime(DateTime dateTime) {
+    return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
+
   currentDateToSelect(TimeOfDay timeOfDay) {
     dateOfTask = timeOfDayToString(timeOfDay);
     notifyListeners();
@@ -169,6 +182,6 @@ class TasksViewModel extends BaseViewModel {
 
   void setCompleteDate(DateTime date) {
     daytime = date;
-    setState();
+    notifyListeners();
   }
 }

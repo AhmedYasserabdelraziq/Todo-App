@@ -27,7 +27,7 @@ class BuildCard extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: VerticalDivider(
-                  color: viewModel.taskDone
+                  color: todos.tasksDone == 'done'
                       ? AppColors.taskDone
                       : AppColors.primary,
                   thickness: 3, // defines the width of the line
@@ -43,11 +43,11 @@ class BuildCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      todos.title,
+                      todos.title!,
                       style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
-                          color: viewModel.taskDone
+                          color: todos.tasksDone == 'done'
                               ? AppColors.taskDone
                               : AppColors.primary),
                     ),
@@ -55,7 +55,7 @@ class BuildCard extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      todos.description,
+                      todos.description!,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: const TextStyle(
@@ -80,23 +80,43 @@ class BuildCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: !viewModel.taskDone
-                    ? ElevatedButton(
-                        onPressed: () {
-                          viewModel.tasksDone();
-                        },
-                        child: const Icon(Icons.check),
-                      )
-                    : Text(
+                child: todos.tasksDone == 'done'
+                    ? Text(
                         'Done!',
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
                             color: AppColors.taskDone),
                       ).onTap(() {
-                        viewModel.tasksDone();
-                      }),
-              )
+                        viewModel.removeTasksDone('notDone');
+                        viewModel.updateData(
+                          TodoModel(
+                            id: todos.id,
+                            title: todos.title,
+                            description: todos.description,
+                            dateTime: todos.dateTime,
+                            dayTime: todos.dayTime,
+                            tasksDone: viewModel.tasksState,
+                          ),
+                        );
+                      })
+                    : ElevatedButton(
+                        onPressed: () {
+                          viewModel.taskDone('done');
+                          viewModel.updateData(
+                            TodoModel(
+                              id: todos.id,
+                              title: todos.title,
+                              description: todos.description,
+                              dateTime: todos.dateTime,
+                              dayTime: todos.dayTime,
+                              tasksDone: viewModel.tasksState,
+                            ),
+                          );
+                        },
+                        child: const Icon(Icons.check),
+                      ),
+              ),
             ],
           ),
         ),

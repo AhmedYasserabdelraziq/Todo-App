@@ -17,14 +17,14 @@ class LocalServices {
 
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'todoDBB.db');
+    final path = join(dbPath, 'todoDBBB.db');
     print("Database path: ${await getDatabasesPath()}");
     return openDatabase(
       path,
       version: 2,
       onCreate: (db, version) async {
         await db.execute(
-          'CREATE TABLE Todos (id TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, datetime TEXT NOT NULL, daytime TEXT NOT NULL);',
+          'CREATE TABLE TODOS (id TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, datetime TEXT NOT NULL, daytime TEXT NOT NULL, doneTasks TEXT NOT NULL);',
         );
       },
     );
@@ -34,7 +34,7 @@ class LocalServices {
     final db = await database;
 
     await db.insert(
-      'Todos',
+      'TODOS',
       todo.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -48,7 +48,7 @@ class LocalServices {
     final db = await database;
 
     await db.update(
-      'Todos',
+      'TODOS',
       todo.toMap(),
       where: 'id = ?',
       whereArgs: [todo.id],
@@ -59,7 +59,7 @@ class LocalServices {
     try {
       final db = await database;
       var delete = await db.delete(
-        'Todos',
+        'TODOS',
         where: 'id=?',
         whereArgs: [todo.id],
       );
@@ -72,7 +72,7 @@ class LocalServices {
   Future<List<TodoModel>> getAllTodos(String dayTime) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'Todos',
+      'TODOS',
       where: 'daytime=?',
       whereArgs: [dayTime],
     );
