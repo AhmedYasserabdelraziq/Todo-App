@@ -13,6 +13,7 @@ class BuildCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.all(0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
@@ -28,7 +29,7 @@ class BuildCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 child: VerticalDivider(
                   color: todos.tasksDone == 'done'
-                      ? AppColors.taskDone
+                      ? AppColors.taskDoneColor
                       : AppColors.primary,
                   thickness: 3, // defines the width of the line
                   width: 20, // total width of divider, including empty space
@@ -48,7 +49,7 @@ class BuildCard extends StatelessWidget {
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: todos.tasksDone == 'done'
-                              ? AppColors.taskDone
+                              ? AppColors.taskDoneColor
                               : AppColors.primary),
                     ),
                     const SizedBox(
@@ -68,6 +69,9 @@ class BuildCard extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(Icons.access_time_rounded),
+                        const SizedBox(
+                          width: 5,
+                        ),
                         Text(
                           todos.dateTime.toString(),
                           style: const TextStyle(
@@ -86,7 +90,7 @@ class BuildCard extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.taskDone),
+                            color: AppColors.taskDoneColor),
                       ).onTap(() {
                         viewModel.removeTasksDone('notDone');
                         viewModel.updateData(

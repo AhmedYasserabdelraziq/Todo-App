@@ -5,10 +5,12 @@ import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 import 'package:todo_app/screens/widget/bottom_sheet.dart';
 import 'package:todo_app/utils/colors.dart';
 
+import '../../widget/custom_appbar.dart';
 import '../base_view.dart';
 import '../model/todo_model.dart';
-import 'archived_screen.dart';
+import '../widget/day_card.dart';
 import 'done_screen.dart';
+import 'no_tasks_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -23,6 +25,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now().subtract(const Duration(days: 2));
     List screens = [
       TasksScreen(
         todo: (todo) {
@@ -31,7 +34,6 @@ class _HomeViewState extends State<HomeView> {
         },
       ),
       const DoneScreen(),
-      const ArchivedScreen(),
     ];
 
     return BaseView<TasksViewModel>(
@@ -43,7 +45,59 @@ class _HomeViewState extends State<HomeView> {
           backgroundColor: AppColors.background,
           extendBodyBehindAppBar: true,
           key: key,
-          body: screens[viewModel.currentNum],
+          body: Stack(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomAppbar(
+                    title: 'To Do List',
+                    hieght: 200,
+                    backgroundColor: AppColors.primary,
+                  ),
+                  Expanded(
+                    child: viewModel.loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : viewModel.todos.isEmpty
+                            ? const NoTasksScreen()
+                            : screens[viewModel.currentNum],
+                  )
+                ],
+              ),
+              Positioned(
+                top: 180,
+                child: SizedBox(
+                  height: 110,
+                  width: 500,
+                  child: Row(
+                    children: List.generate(
+                      5,
+                      (index) {
+                        DateTime? dayToShow = now.add(Duration(days: index));
+                        DateTime dateSelected = DateTime(
+                            dayToShow.year, dayToShow.month, dayToShow.day);
+                        return InkWell(
+                          onTap: () async {
+                            await viewModel.selectedDay(dayToShow.day);
+                            viewModel.getAllData(
+                              dateSelected,
+                            );
+                            viewModel.currentDate(dateSelected);
+                          },
+                          child: DayCard(
+                            dayToShow: dayToShow,
+                            color: AppColors.primary,
+                            text: viewModel.weekDayName(dayToShow.weekday),
+                            selectDay: viewModel.selectedCardDay,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
           bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.currentNum,
               type: BottomNavigationBarType.fixed,
@@ -58,10 +112,6 @@ class _HomeViewState extends State<HomeView> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.check_circle_outline),
                   label: ('Done'),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.archive),
-                  label: ('Tasks'),
                 ),
               ]),
           floatingActionButton: Consumer<TasksViewModel>(
@@ -104,7 +154,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ),
                             (context) => bottomSheetContent(viewModel, context),
-                            backgroundColor: Colors.grey[200],
+                            backgroundColor: AppColors.bottomSheetColor,
                           )
                           .closed
                           .then((value) {

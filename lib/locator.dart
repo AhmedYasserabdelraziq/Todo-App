@@ -6,7 +6,7 @@ GetIt locator = GetIt.instance;
 
 Future setupLocator() async {
   locator.registerLazySingleton<LocalServices>(() => LocalServices());
-  locator.registerFactory<TasksViewModel>(() => TasksViewModel(
+  locator.registerFactory(() => TasksViewModel(
     localServices:locator<LocalServices>(),
   ));
 }

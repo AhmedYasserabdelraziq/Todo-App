@@ -18,6 +18,7 @@ class TasksViewModel extends BaseViewModel {
   DateTime? daytime;
   var opened = false;
   var update = false;
+  var loading = false;
   String? tasksState;
 
   int? selectedCardDay = DateTime.now().day;
@@ -44,6 +45,11 @@ class TasksViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  loadingData() {
+    loading = !loading;
+    notifyListeners();
+  }
+
   void taskDone(String tasDon) {
     tasksState = tasDon;
     notifyListeners();
@@ -59,7 +65,11 @@ class TasksViewModel extends BaseViewModel {
     daytime = now;
     DateTime dateOnly = DateTime(now.year, now.month, now.day);
     await localServices.database;
+    Future.delayed(const Duration(seconds: 1), () {
+      loadingData();
+    });
     getAllData(dateOnly);
+    loadingData();
     notifyListeners();
     print('createdDatabase');
   }
@@ -99,6 +109,7 @@ class TasksViewModel extends BaseViewModel {
 
   void deleteData(TodoModel todo) async {
     await localServices.deleteTodo(todo);
+    getAllData(daytime);
     notifyListeners();
     print('deleted');
   }

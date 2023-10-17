@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
+import 'package:todo_app/utils/colors.dart';
 
 buildBottomSheet(TasksViewModel viewModel, BuildContext context) {
   return showBottomSheet(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppColors.bottomSheetColor,
       elevation: 30,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -34,11 +35,9 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
               controller: viewModel.titleTaskController,
               decoration: const InputDecoration(
                 label: Text('Title'),
-                hintText: 'Todo title',
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
                     width: .75,
-                    color: Colors.white,
                   ),
                   borderRadius: BorderRadius.all(
                     Radius.circular(10.0),
@@ -56,17 +55,16 @@ bottomSheetContent(TasksViewModel viewModel, BuildContext context) {
               controller: viewModel.descriptionTaskController,
               maxLines: 5,
               decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      width: .75,
-                      color: Colors.white,
-                    ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: .75,
                   ),
-                  label: Text('description'),
-                  hintText: 'add todo description'),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
+                  ),
+                ),
+                label: Text('description'),
+              ),
             ),
           ),
           Row(
