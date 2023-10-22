@@ -6,6 +6,7 @@ import 'package:todo_app/screens/widget/task_card.dart';
 import 'package:todo_app/utils/extintions.dart';
 
 import '../widget/bottom_sheet.dart';
+import 'no_tasks_screen.dart';
 
 class TasksScreen extends StatelessWidget {
   const TasksScreen({super.key, required this.todo});
@@ -15,7 +16,7 @@ class TasksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var viewModel = Provider.of<TasksViewModel>(context);
-    return Stack(
+    return viewModel.todos.isNotEmpty?Stack(
       children: [
         Column(
           children: [
@@ -87,6 +88,6 @@ class TasksScreen extends StatelessWidget {
           ],
         ),
       ],
-    );
+    ):const NoTasksScreen();
   }
 }

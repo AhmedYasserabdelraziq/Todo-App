@@ -14,17 +14,38 @@ class TasksViewModel extends BaseViewModel {
   var descriptionTaskController = TextEditingController();
   TodoModel? note;
   List<TodoModel> todos = [];
+  List<TodoModel> todosDone = [];
   String? dateOfTask;
   DateTime? daytime;
   var opened = false;
   var update = false;
   var loading = false;
+  var donePage = false;
   String? tasksState;
 
   int? selectedCardDay = DateTime.now().day;
+  DateTime now = DateTime.now();
 
   void currentIndex(int index) {
+    print('this is dayTime $daytime');
     currentNum = index;
+    if (currentNum == 1) {
+      donePage = true;
+      Future.delayed(const Duration(milliseconds: 200), () {
+        loadingData();
+      });
+      getAllDoneData(daytime);
+      loadingData();
+      print(donePage);
+      print(currentNum);
+    } else {
+      donePage = false;
+      Future.delayed(const Duration(milliseconds: 200), () {
+        loadingData();
+      });
+      getAllData(daytime);
+      loadingData();
+    }
     notifyListeners();
   }
 
@@ -61,14 +82,12 @@ class TasksViewModel extends BaseViewModel {
   }
 
   void createData() async {
-    DateTime now = DateTime.now();
-    daytime = now;
-    DateTime dateOnly = DateTime(now.year, now.month, now.day);
-    await localServices.database;
-    Future.delayed(const Duration(seconds: 1), () {
+    daytime = DateTime(now.year, now.month, now.day);
+    Future.delayed(const Duration(seconds: 2), () {
       loadingData();
     });
-    getAllData(dateOnly);
+    await localServices.database;
+    getAllData(daytime);
     loadingData();
     notifyListeners();
     print('createdDatabase');
@@ -92,7 +111,6 @@ class TasksViewModel extends BaseViewModel {
       reset();
       print('reset');
     }
-    //if (title.isNotEmpty && description.isNotEmpty && dateOfTask != null&&daytime) {
   }
 
   updateData(TodoModel todo) async {
@@ -119,6 +137,13 @@ class TasksViewModel extends BaseViewModel {
     todos = data;
     notifyListeners();
     print('getAll');
+  }
+
+  void getAllDoneData(DateTime? dateTime) async {
+    final data = await localServices.getAllDoneTodos(dateTime.toString());
+    todosDone = data;
+    notifyListeners();
+    print('getAllDone');
   }
 
   void reset() {
@@ -193,6 +218,10 @@ class TasksViewModel extends BaseViewModel {
 
   void setCompleteDate(DateTime date) {
     daytime = date;
+    notifyListeners();
+  }
+
+  void refresh() {
     notifyListeners();
   }
 }

@@ -4,13 +4,14 @@ import 'package:todo_app/screens/view/tasks_screen.dart';
 import 'package:todo_app/screens/view_model/tasks_view_model.dart';
 import 'package:todo_app/screens/widget/bottom_sheet.dart';
 import 'package:todo_app/utils/colors.dart';
+import 'package:todo_app/utils/extintions.dart';
 
 import '../../widget/custom_appbar.dart';
 import '../base_view.dart';
 import '../model/todo_model.dart';
+import '../widget/addin_new_day.dart';
 import '../widget/day_card.dart';
 import 'done_screen.dart';
-import 'no_tasks_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -58,9 +59,7 @@ class _HomeViewState extends State<HomeView> {
                   Expanded(
                     child: viewModel.loading
                         ? const Center(child: CircularProgressIndicator())
-                        : viewModel.todos.isEmpty
-                            ? const NoTasksScreen()
-                            : screens[viewModel.currentNum],
+                        : screens[viewModel.currentNum],
                   )
                 ],
               ),
@@ -68,31 +67,49 @@ class _HomeViewState extends State<HomeView> {
                 top: 180,
                 child: SizedBox(
                   height: 110,
-                  width: 500,
-                  child: Row(
-                    children: List.generate(
-                      5,
-                      (index) {
-                        DateTime? dayToShow = now.add(Duration(days: index));
-                        DateTime dateSelected = DateTime(
-                            dayToShow.year, dayToShow.month, dayToShow.day);
-                        return InkWell(
-                          onTap: () async {
-                            await viewModel.selectedDay(dayToShow.day);
-                            viewModel.getAllData(
-                              dateSelected,
+                  width: 410,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      const EditingDay(true).onTap(() {
+                        now = now.add(const Duration(days: -1));
+                        viewModel.refresh();
+                      }),
+                      Wrap(
+                        children: List.generate(
+                          5,
+                          (index) {
+                            DateTime? dayToShow =
+                                now.add(Duration(days: index));
+                            DateTime dateSelected = DateTime(
+                                dayToShow.year, dayToShow.month, dayToShow.day);
+                            return InkWell(
+                              onTap: () async {
+                                await viewModel.selectedDay(dayToShow.day);
+                                viewModel.donePage
+                                    ? viewModel.getAllDoneData(
+                                        dateSelected,
+                                      )
+                                    : viewModel.getAllData(
+                                        dateSelected,
+                                      );
+                                viewModel.currentDate(dateSelected);
+                              },
+                              child: DayCard(
+                                dayToShow: dayToShow,
+                                color: AppColors.primary,
+                                text: viewModel.weekDayName(dayToShow.weekday),
+                                selectDay: viewModel.selectedCardDay,
+                              ),
                             );
-                            viewModel.currentDate(dateSelected);
                           },
-                          child: DayCard(
-                            dayToShow: dayToShow,
-                            color: AppColors.primary,
-                            text: viewModel.weekDayName(dayToShow.weekday),
-                            selectDay: viewModel.selectedCardDay,
-                          ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                      const EditingDay(false).onTap(() {
+                        now = now.add(const Duration(days: 1));
+                        viewModel.refresh();
+                      }),
+                    ]),
                   ),
                 ),
               ),

@@ -103,6 +103,9 @@ class BuildCard extends StatelessWidget {
                             tasksDone: viewModel.tasksState,
                           ),
                         );
+                        viewModel.donePage
+                            ? viewModel.getAllDoneData(viewModel.daytime)
+                            : null;
                       })
                     : ElevatedButton(
                         onPressed: () {

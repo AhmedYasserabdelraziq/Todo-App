@@ -78,4 +78,14 @@ class LocalServices {
     );
     return List.generate(maps.length, (i) => TodoModel.fromMap(maps[i]));
   }
+
+  Future<List<TodoModel>> getAllDoneTodos(String dayTime) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'TODOS',
+      where: 'daytime = ? AND doneTasks = ?',
+      whereArgs: [dayTime, 'done'],
+    );
+    return List.generate(maps.length, (i) => TodoModel.fromMap(maps[i]));
+  }
 }
