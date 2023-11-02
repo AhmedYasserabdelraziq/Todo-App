@@ -27,6 +27,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now().subtract(const Duration(days: 2));
+    Size size = MediaQuery.of(context).size;
     List screens = [
       TasksScreen(
         todo: (todo) {
@@ -67,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
                 top: 180,
                 child: SizedBox(
                   height: 110,
-                  width: 410,
+                  width: size.width,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(children: [
