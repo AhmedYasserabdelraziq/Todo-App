@@ -66,52 +66,48 @@ class _HomeViewState extends State<HomeView> {
               ),
               Positioned(
                 top: 180,
-                child: SizedBox(
-                  height: 110,
-                  width: size.width,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      const EditingDay(true).onTap(() {
-                        now = now.add(const Duration(days: -1));
-                        viewModel.refresh();
-                      }),
-                      Wrap(
-                        children: List.generate(
-                          5,
-                          (index) {
-                            DateTime? dayToShow =
-                                now.add(Duration(days: index));
-                            DateTime dateSelected = DateTime(
-                                dayToShow.year, dayToShow.month, dayToShow.day);
-                            return InkWell(
-                              onTap: () async {
-                                await viewModel.selectedDay(dayToShow.day);
-                                viewModel.donePage
-                                    ? viewModel.getAllDoneData(
-                                        dateSelected,
-                                      )
-                                    : viewModel.getAllData(
-                                        dateSelected,
-                                      );
-                                viewModel.currentDate(dateSelected);
-                              },
-                              child: DayCard(
-                                dayToShow: dayToShow,
-                                color: AppColors.primary,
-                                text: viewModel.weekDayName(dayToShow.weekday),
-                                selectDay: viewModel.selectedCardDay,
-                              ),
-                            );
-                          },
-                        ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    const EditingDay(true).onTap(() {
+                      now = now.add(const Duration(days: -1));
+                      viewModel.refresh();
+                    }),
+                    Wrap(
+                      children: List.generate(
+                        5,
+                        (index) {
+                          DateTime? dayToShow =
+                              now.add(Duration(days: index));
+                          DateTime dateSelected = DateTime(
+                              dayToShow.year, dayToShow.month, dayToShow.day);
+                          return InkWell(
+                            onTap: () async {
+                              await viewModel.selectedDay(dayToShow.day);
+                              viewModel.donePage
+                                  ? viewModel.getAllDoneData(
+                                      dateSelected,
+                                    )
+                                  : viewModel.getAllData(
+                                      dateSelected,
+                                    );
+                              viewModel.currentDate(dateSelected);
+                            },
+                            child: DayCard(
+                              dayToShow: dayToShow,
+                              color: AppColors.primary,
+                              text: viewModel.weekDayName(dayToShow.weekday),
+                              selectDay: viewModel.selectedCardDay,
+                            ),
+                          );
+                        },
                       ),
-                      const EditingDay(false).onTap(() {
-                        now = now.add(const Duration(days: 1));
-                        viewModel.refresh();
-                      }),
-                    ]),
-                  ),
+                    ),
+                    const EditingDay(false).onTap(() {
+                      now = now.add(const Duration(days: 1));
+                      viewModel.refresh();
+                    }),
+                  ]),
                 ),
               ),
             ],

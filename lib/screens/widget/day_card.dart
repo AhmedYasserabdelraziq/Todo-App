@@ -17,7 +17,7 @@ class DayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 82,
+      width: 70,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -46,13 +46,15 @@ class DayCard extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
-              Text(
-                '${dayToShow.day}',
-                style: TextStyle(
-                  fontSize: 40,
-                  color: dayToShow.day == DateTime.now().day
-                      ? color
-                      : Colors.black87,
+              FittedBox(
+                child: Text(
+                  '${dayToShow.day}',
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: dayToShow.day == DateTime.now().day
+                        ? color
+                        : Colors.black87,
+                  ),
                 ),
               ),
             ],

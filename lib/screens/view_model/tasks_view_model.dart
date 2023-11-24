@@ -125,7 +125,7 @@ class TasksViewModel extends BaseViewModel {
     print('updated');
   }
 
-  void deleteData(TodoModel todo) async {
+  Future deleteData(TodoModel todo) async {
     await localServices.deleteTodo(todo);
     getAllData(daytime);
     notifyListeners();

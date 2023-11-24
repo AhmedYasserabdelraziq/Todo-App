@@ -28,9 +28,37 @@ class DoneScreen extends StatelessWidget {
                             viewModel.todosDone.length,
                             (index) => Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: BuildCard(
-                                todos: viewModel.todosDone[index],
-                                viewModel: viewModel,
+                              child: Dismissible(
+                                onDismissed: (_) async {
+                                  await viewModel
+                                      .deleteData(viewModel.todosDone[index]);
+                                  viewModel.todosDone.removeAt(index);
+                                },
+                                direction: DismissDirection.startToEnd,
+                                background: Stack(
+                                  children: [
+                                    Container(
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 45,
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                        size: 50,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                key: ValueKey(viewModel.todosDone[index]),
+                                child: BuildCard(
+                                  todos: viewModel.todosDone[index],
+                                  viewModel: viewModel,
+                                ),
                               ),
                             ),
                           ),

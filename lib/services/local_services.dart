@@ -73,8 +73,8 @@ class LocalServices {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'TODOS',
-      where: 'daytime=?',
-      whereArgs: [dayTime],
+      where: 'daytime=? AND doneTasks = ?',
+      whereArgs: [dayTime,'notDone'],
     );
     return List.generate(maps.length, (i) => TodoModel.fromMap(maps[i]));
   }

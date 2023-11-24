@@ -120,6 +120,7 @@ class BuildCard extends StatelessWidget {
                               tasksDone: viewModel.tasksState,
                             ),
                           );
+                          print(viewModel.tasksState);
                         },
                         child: const Icon(Icons.check),
                       ),
