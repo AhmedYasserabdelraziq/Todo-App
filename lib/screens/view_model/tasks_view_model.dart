@@ -12,7 +12,6 @@ class TasksViewModel extends BaseViewModel {
   int currentNum = 0;
   var titleTaskController = TextEditingController();
   var descriptionTaskController = TextEditingController();
-  TodoModel? note;
   List<TodoModel> todos = [];
   List<TodoModel> todosDone = [];
   String? dateOfTask;
@@ -106,6 +105,7 @@ class TasksViewModel extends BaseViewModel {
       );
       await localServices.insertTodo(addModel);
       getAllData(daytime);
+      selectedCardDay = daytime!.day;
       notifyListeners();
       print('refreshed');
       reset();

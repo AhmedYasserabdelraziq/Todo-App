@@ -22,7 +22,7 @@ class DayCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
           side: BorderSide(
-            color: selectDay! == dayToShow.day ? Colors.indigo : Colors.white,
+            color: selectDay == dayToShow.day ? Colors.indigo : Colors.white,
             // Specify border color
             width: 3.0, // Specify border thickness
           ),

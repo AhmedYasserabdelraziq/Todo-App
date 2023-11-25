@@ -82,8 +82,8 @@ class _HomeViewState extends State<HomeView> {
                           DateTime dateSelected = DateTime(
                               dayToShow.year, dayToShow.month, dayToShow.day);
                           return InkWell(
-                            onTap: () async {
-                              await viewModel.selectedDay(dayToShow.day);
+                            onTap: () {
+                              viewModel.selectedDay(dayToShow.day);
                               viewModel.donePage
                                   ? viewModel.getAllDoneData(
                                       dateSelected,
